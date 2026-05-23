@@ -1,0 +1,46 @@
+.doctors-page {}
+.doctors-header { background: radial-gradient(ellipse at top, rgba(124,58,237,0.2) 0%, transparent 70%), var(--bg-secondary); padding: 100px 0 50px; text-align: center; position: relative; overflow: hidden; }
+.dh-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+.doctors-header h1 { font-size: 48px; font-weight: 900; margin-bottom: 12px; position: relative; }
+.doctors-header p { color: var(--text-secondary); font-size: 16px; margin-bottom: 32px; position: relative; }
+
+.search-bar { position: relative; max-width: 500px; margin: 0 auto; }
+.search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; }
+.search-input { width: 100%; padding: 14px 20px 14px 48px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 50px; color: var(--text-primary); font-size: 15px; outline: none; transition: var(--transition); font-family: var(--font-sans); }
+.search-input:focus { border-color: var(--purple); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
+.search-input::placeholder { color: var(--text-muted); }
+
+.filters-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 28px 0 16px; }
+.filter-btn { padding: 8px 18px; border-radius: 40px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); font-family: var(--font-sans); white-space: nowrap; }
+.filter-btn:hover { border-color: var(--purple); color: var(--purple-light); }
+.filter-btn.active { background: var(--gradient-primary); color: #fff; border-color: transparent; box-shadow: 0 2px 10px rgba(124,58,237,0.4); }
+
+.results-info { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+
+.doctors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-bottom: 60px; }
+
+.doctor-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: var(--transition); display: flex; flex-direction: column; gap: 14px; }
+.doctor-card:hover { border-color: var(--border-hover); transform: translateY(-4px); box-shadow: var(--shadow-purple); }
+
+.dc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.dc-avatar { width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.dc-avail { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
+.avail-dot { width: 7px; height: 7px; border-radius: 50%; }
+.avail-dot.available { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse-glow 2s ease-in-out infinite; }
+.avail-dot.unavailable { background: var(--text-muted); }
+
+.dc-info h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.dc-spec { font-size: 13px; color: var(--purple-light); font-weight: 600; }
+.dc-qual { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+.dc-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+.dc-stat { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; }
+.dc-stat-label { color: var(--text-muted); font-weight: 400; }
+
+.dc-about { font-size: 13px; color: var(--text-secondary); line-height: 1.5; flex: 1; }
+
+.dc-actions { display: flex; gap: 8px; margin-top: 4px; }
+.dc-actions .btn { flex: 1; justify-content: center; }
+
+@media (max-width: 1024px) { .doctors-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .doctors-grid { grid-template-columns: 1fr; } .doctors-header h1 { font-size: 34px; } }
