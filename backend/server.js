@@ -63,20 +63,33 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
+    console.log('Attempting to start server...');
+    if (!process.env.MONGO_URI) {
+      console.error('❌ CRITICAL ERROR: MONGO_URI environment variable is missing!');
+    } else {
+      console.log('MONGO_URI is provided. Attempting database connection...');
+    }
+    
     await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 8000,
+      serverSelectionTimeoutMS: 5000,
     });
     console.log('✅ MongoDB Connected');
+    
     const { seedAdmin } = require('./utils/seed');
     await seedAdmin();
+    
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`   Allowed CORS origins: ${allowedOrigins.join(', ')}`);
     });
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
-    console.error('   Start MongoDB locally or set MONGO_URI in backend/.env (e.g. MongoDB Atlas).');
-    process.exit(1);
+    console.error('   Please verify your MongoDB Atlas credentials and IP Allowlist.');
+    
+    // Instead of process.exit(1), start the server anyway so Render logs don't get truncated
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT} (BUT DATABASE CONNECTION FAILED)`);
+    });
   }
 };
 
