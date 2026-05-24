@@ -7,10 +7,25 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// Middleware — allow local dev + production frontend (set FRONTEND_URL on host, comma-separated)
+const defaultOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+];
+const envOrigins = (process.env.FRONTEND_URL || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'],
-  credentials: true
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    callback(null, false);
+  },
+  credentials: true,
 }));
 app.use(express.json());
 
@@ -21,10 +36,22 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/patients', require('./routes/patients'));
 
-// Health check
-app.get('/', (req, res) => {
-  res.json({ message: 'Hospital Management API is running' });
-});
+const path = require('path');
+
+// Serve static frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendDistPath = path.join(__dirname, '../frontend/dist');
+  app.use(express.static(frontendDistPath));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+} else {
+  // Health check
+  app.get('/', (req, res) => {
+    res.json({ message: 'Hospital Management API is running' });
+  });
+}
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -42,9 +69,9 @@ const startServer = async () => {
     console.log('✅ MongoDB Connected');
     const { seedAdmin } = require('./utils/seed');
     await seedAdmin();
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`   API health: http://localhost:${PORT}/`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`   Allowed CORS origins: ${allowedOrigins.join(', ')}`);
     });
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
